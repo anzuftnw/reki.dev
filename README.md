@@ -1,5 +1,7 @@
 # reki.dev
 
+<div align="center">
+
 My personal homepage project :D
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
@@ -11,6 +13,8 @@ My personal homepage project :D
 ![Bun](https://img.shields.io/badge/Bun-000000?logo=bun&logoColor=white)
 
 Made in collaboration between mr claude and yours truly. >:3
+
+</div>
 
 ## Usage
 
