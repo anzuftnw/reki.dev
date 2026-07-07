@@ -2,9 +2,13 @@ import { createResource, For, Show } from 'solid-js'
 import { endings } from '@/lib/collections/animanga/endings'
 import { MediaItemCard } from '@/routes/animanga/components/MediaItemCard'
 import { MediaItemForm } from '@/routes/animanga/components/MediaItemForm'
+import { useAuth } from '@/context/AuthContext'
+import { useUI } from '@/context/UIContext'
 
 export default function EndingsList() {
   const [items, { refetch }] = createResource(() => endings.list())
+  const { isOwner } = useAuth()
+  const { editMode } = useUI()
 
   const handleAdd = async (data: { title: string; score: number }) => {
     await endings.create({ title: data.title, score: data.score, series: '' })
@@ -25,7 +29,9 @@ export default function EndingsList() {
           </For>
         </ul>
       </Show>
-      <MediaItemForm onSubmit={handleAdd} />
+      <Show when={isOwner() && editMode()}>
+        <MediaItemForm onSubmit={handleAdd} />
+      </Show>
     </section>
   )
 }

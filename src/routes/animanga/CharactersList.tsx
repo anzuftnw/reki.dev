@@ -2,9 +2,13 @@ import { createResource, For, Show } from 'solid-js'
 import { characters } from '@/lib/collections/animanga/characters'
 import { MediaItemCard } from '@/routes/animanga/components/MediaItemCard'
 import { MediaItemForm } from '@/routes/animanga/components/MediaItemForm'
+import { useAuth } from '@/context/AuthContext'
+import { useUI } from '@/context/UIContext'
 
 export default function CharactersList() {
   const [items, { refetch }] = createResource(() => characters.list())
+  const { isOwner } = useAuth()
+  const { editMode } = useUI()
 
   const handleAdd = async (data: { title: string; score: number }) => {
     await characters.create({ name: data.title, score: data.score, series: '' })
@@ -25,7 +29,9 @@ export default function CharactersList() {
           </For>
         </ul>
       </Show>
-      <MediaItemForm onSubmit={handleAdd} />
+      <Show when={isOwner() && editMode()}>
+        <MediaItemForm onSubmit={handleAdd} />
+      </Show>
     </section>
   )
 }

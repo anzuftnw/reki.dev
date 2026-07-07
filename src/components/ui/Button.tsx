@@ -9,9 +9,9 @@ interface ButtonProps extends ComponentProps<'button'> {
 }
 
 const variantClasses: Record<Variant, string> = {
-  primary: 'bg-accent text-accent-foreground hover:opacity-90',
-  secondary: 'bg-muted/10 text-foreground border border-border hover:bg-muted/20',
-  ghost: 'text-foreground hover:bg-muted/10',
+  primary: 'bg-accent text-accent-foreground hover:brightness-105',
+  secondary: 'bg-surface-2 text-text-1 border border-border hover:bg-surface-3',
+  ghost: 'text-text-1 hover:bg-surface-3',
 }
 
 const sizeClasses: Record<Size, string> = {
@@ -26,7 +26,7 @@ export function Button(props: ButtonProps) {
 
   return (
     <button
-      class={`inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 ${variantClasses[variant()]} ${sizeClasses[size()]} ${local.class ?? ''}`}
+      class={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 ${variantClasses[variant()]} ${sizeClasses[size()]} ${local.class ?? ''}`}
       {...rest}
     />
   )

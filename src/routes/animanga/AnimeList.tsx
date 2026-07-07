@@ -2,9 +2,13 @@ import { createResource, For, Show } from 'solid-js'
 import { anime } from '@/lib/collections/animanga/anime'
 import { MediaItemCard } from '@/routes/animanga/components/MediaItemCard'
 import { MediaItemForm } from '@/routes/animanga/components/MediaItemForm'
+import { useAuth } from '@/context/AuthContext'
+import { useUI } from '@/context/UIContext'
 
 export default function AnimeList() {
   const [items, { refetch }] = createResource(() => anime.list())
+  const { isOwner } = useAuth()
+  const { editMode } = useUI()
 
   const handleAdd = async (data: { title: string; score: number }) => {
     await anime.create({ ...data, status: 'planning' })
@@ -25,7 +29,9 @@ export default function AnimeList() {
           </For>
         </ul>
       </Show>
-      <MediaItemForm onSubmit={handleAdd} />
+      <Show when={isOwner() && editMode()}>
+        <MediaItemForm onSubmit={handleAdd} />
+      </Show>
     </section>
   )
 }

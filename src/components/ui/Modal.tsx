@@ -17,7 +17,11 @@ export const Modal: ParentComponent<ModalProps> = (props) => {
   })
 
   return (
-    <dialog ref={ref} onClose={() => props.onClose()}>
+    <dialog
+      ref={ref}
+      onClose={() => props.onClose()}
+      class="rounded-xl border border-border bg-surface-1 p-6 text-text-1 shadow-lg backdrop:bg-black/40"
+    >
       {props.children}
     </dialog>
   )

@@ -3,5 +3,9 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge(props: StatusBadgeProps) {
-  return <span>{props.status}</span>
+  return (
+    <span class="inline-flex items-center rounded-full bg-surface-3 px-2.5 py-0.5 font-mono text-[10px] tracking-wide text-text-2 uppercase">
+      {props.status}
+    </span>
+  )
 }
