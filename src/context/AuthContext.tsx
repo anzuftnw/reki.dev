@@ -21,7 +21,10 @@ export const AuthProvider: ParentComponent = (props) => {
 
   const value: AuthContextValue = {
     user,
-    isOwner: () => pb.authStore.isValid,
+    // Derived from the `user` signal (not a direct pb.authStore.isValid read) so it's
+    // actually reactive -- authStore itself isn't a Solid signal, so reading it directly
+    // here would freeze at whatever it was on first render and never update after login/logout.
+    isOwner: () => !!user(),
     login: async (email, password) => {
       await pb.collection('users').authWithPassword(email, password)
     },

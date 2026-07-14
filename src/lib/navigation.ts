@@ -1,10 +1,12 @@
 import type { IconTypes } from 'solid-icons'
 import {
   TbOutlineBook2,
+  TbOutlineDeviceGamepad2,
   TbOutlineDisc,
   TbOutlineFileText,
   TbOutlineFolder,
   TbOutlineHome,
+  TbOutlineLayoutGrid,
   TbOutlineListDetails,
   TbOutlineMicrophone2,
   TbOutlineMovie,
@@ -19,10 +21,20 @@ export interface NavItem {
   label: string
   href: string
   icon: IconTypes
+  /** Defaults to 'public'. 'owner' hides the item from the sidebar for non-owners
+   *  and blocks direct navigation to it via RouteGuard — single source of truth
+   *  for both. */
+  visibility?: 'public' | 'owner'
 }
 
 export interface NavGroup {
   label: string | null
+  /** Present when the group has its own landing/overview page — the group's sidebar
+   *  header links here directly instead of duplicating it as a first "Overview" item.
+   *  `icon` is required alongside it so the header can render as a full nav row
+   *  (matching NavRow) instead of disappearing in icon-only sidebar mode. */
+  href?: string
+  icon?: IconTypes
   items: NavItem[]
 }
 
@@ -36,7 +48,15 @@ export const navGroups: NavGroup[] = [
     ],
   },
   {
+    label: 'Games',
+    href: '/games',
+    icon: TbOutlineLayoutGrid,
+    items: [{ label: 'Arknights', href: '/games/arknights', icon: TbOutlineDeviceGamepad2 }],
+  },
+  {
     label: 'Animanga',
+    href: '/animanga',
+    icon: TbOutlineLayoutGrid,
     items: [
       { label: 'Anime', href: '/anime', icon: TbOutlineMovie },
       { label: 'Manga', href: '/manga', icon: TbOutlineBook2 },
@@ -48,6 +68,8 @@ export const navGroups: NavGroup[] = [
   },
   {
     label: 'Music',
+    href: '/music',
+    icon: TbOutlineLayoutGrid,
     items: [
       { label: 'Artists', href: '/music/artists', icon: TbOutlineMicrophone2 },
       { label: 'Albums', href: '/music/albums', icon: TbOutlinePlaylist },
@@ -56,27 +78,41 @@ export const navGroups: NavGroup[] = [
   },
 ]
 
-// Pinned to the sidebar bottom, outside the regular nav groups — kept here (rather than
-// hardcoded in Sidebar) so matchNavItem/breadcrumbs can resolve it like any other item.
 export const settingsItem: NavItem = { label: 'Settings', href: '/settings', icon: TbOutlineSettings }
 
-export function matchNavItem(pathname: string): { group: NavGroup; item: NavItem } | null {
-  let best: { group: NavGroup; item: NavItem } | null = null
+export function matchNavItem(pathname: string): { group: NavGroup; item: NavItem | null } | null {
+  let best: { group: NavGroup; item: NavItem | null; matchedHref: string } | null = null
 
-  for (const group of navGroups) {
-    for (const item of group.items) {
-      const isMatch =
-        item.href === '/' ? pathname === '/' : pathname === item.href || pathname.startsWith(`${item.href}/`)
-
-      if (isMatch && (!best || item.href.length > best.item.href.length)) {
-        best = { group, item }
-      }
+  const consider = (group: NavGroup, item: NavItem | null, href: string) => {
+    const isMatch = href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`)
+    if (isMatch && (!best || href.length > best.matchedHref.length)) {
+      best = { group, item, matchedHref: href }
     }
   }
 
-  if (!best && (pathname === settingsItem.href || pathname.startsWith(`${settingsItem.href}/`))) {
-    best = { group: { label: null, items: [settingsItem] }, item: settingsItem }
+  for (const group of navGroups) {
+    if (group.href) consider(group, null, group.href)
+    for (const item of group.items) consider(group, item, item.href)
   }
 
-  return best
+  if (!best && (pathname === settingsItem.href || pathname.startsWith(`${settingsItem.href}/`))) {
+    best = { group: { label: null, items: [settingsItem] }, item: settingsItem, matchedHref: settingsItem.href }
+  }
+
+  return best ? { group: best.group, item: best.item } : null
+}
+
+export function filterVisibleNavGroups(groups: NavGroup[], isOwner: boolean): NavGroup[] {
+  return groups
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) => (item.visibility ?? 'public') === 'public' || isOwner),
+    }))
+    .filter((group) => group.items.length > 0)
+}
+
+export function isRouteAllowed(pathname: string, isOwner: boolean): boolean {
+  const match = matchNavItem(pathname)
+  if (!match) return true
+  return (match.item?.visibility ?? 'public') === 'public' || isOwner
 }

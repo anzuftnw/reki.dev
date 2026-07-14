@@ -1,10 +1,4 @@
-import { makeListCollection } from '@/lib/collections/base'
+import { makeThemeSongCollection, type ThemeSong, type ThemeSongInput } from '@/lib/collections/animanga/themeSong'
 
-export interface OpeningItem {
-  id: string
-  title: string
-  series: string
-  score: number
-}
-
-export const openings = makeListCollection<OpeningItem>('openings')
+export type { ThemeSong as Opening, ThemeSongInput as OpeningInput }
+export const openings = makeThemeSongCollection('openings')

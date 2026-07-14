@@ -1,11 +1,13 @@
 import { createSignal, Show } from 'solid-js'
 import { useAuth } from '@/context/AuthContext'
+import { useUI } from '@/context/UIContext'
 import { Modal } from '@/components/ui/Modal'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 
 export default function Settings() {
   const { isOwner, login, logout } = useAuth()
+  const { contentWidth, cycleContentWidth } = useUI()
   const [loginOpen, setLoginOpen] = createSignal(false)
   const [email, setEmail] = createSignal('')
   const [password, setPassword] = createSignal('')
@@ -28,11 +30,18 @@ export default function Settings() {
     <section class="flex flex-col gap-8">
       <h1 class="text-xl font-semibold">Settings</h1>
 
+      <div class="flex flex-col gap-3">
+        <h2 class="text-xs font-semibold tracking-wide text-text-3 uppercase">Layout</h2>
+        <Button variant="secondary" class="self-start" onClick={cycleContentWidth}>
+          Content width: {contentWidth() === 'full' ? 'Full' : 'Centered'}
+        </Button>
+      </div>
+
       <Show
         when={isOwner()}
         fallback={
           <div class="flex flex-col gap-3">
-            <h2 class="text-xs font-semibold tracking-wide text-muted uppercase">Account</h2>
+            <h2 class="text-xs font-semibold tracking-wide text-text-3 uppercase">Account</h2>
             <Button class="self-start" onClick={() => setLoginOpen(true)}>
               Admin Login
             </Button>
@@ -41,15 +50,15 @@ export default function Settings() {
       >
         <div class="flex flex-col gap-8">
           <div class="flex flex-col gap-3">
-            <h2 class="text-xs font-semibold tracking-wide text-muted uppercase">Account</h2>
-            <p class="text-sm text-muted">Signed in as admin.</p>
+            <h2 class="text-xs font-semibold tracking-wide text-text-3 uppercase">Account</h2>
+            <p class="text-sm text-text-3">Signed in as admin.</p>
             <Button variant="secondary" class="self-start" onClick={logout}>
               Log out
             </Button>
           </div>
 
           <div class="flex flex-col gap-3">
-            <h2 class="text-xs font-semibold tracking-wide text-muted uppercase">Connected accounts</h2>
+            <h2 class="text-xs font-semibold tracking-wide text-text-3 uppercase">Connected accounts</h2>
             <div class="flex max-w-xs flex-col gap-2">
               <Button variant="secondary" disabled>
                 Connect AniList
@@ -77,7 +86,7 @@ export default function Settings() {
           />
           <Button type="submit">Log in</Button>
           <Show when={error()}>
-            <p role="alert" class="text-sm text-red-600">
+            <p role="alert" class="text-sm text-red-soft">
               {error()}
             </p>
           </Show>

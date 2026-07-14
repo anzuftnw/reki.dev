@@ -1,0 +1,40 @@
+:root {
+  color-scheme: light dark;
+  --sidebar-width: 14.5rem;
+  --sidebar-width-collapsed: 3.5rem;
+}
+[data-theme="light"] {
+  color-scheme: light;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+@theme {
+  --font-sans: "Instrument Sans", system-ui, sans-serif;
+  --font-serif: "Instrument Serif", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* below Tailwind's text-xs (12px) — used for uppercase micro-labels/badges */
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 0.875rem;
+
+  --color-canvas: light-dark(#fbf9f6, #17130f);
+  --color-surface-1: light-dark(#ffffff, #1c1712);
+  --color-surface-2: light-dark(#f5f1ec, #201b15);
+  --color-surface-3: light-dark(#ece5db, #262019);
+  --color-border: light-dark(#00000012, #ffffff14);
+  --color-border-strong: light-dark(#00000022, #ffffff24);
+  --color-text-1: light-dark(#241f19, #ece5da);
+  --color-text-2: light-dark(#6b6155, #ab9f92);
+  --color-text-3: light-dark(#8b8175, #6f665b);
+  --color-accent: light-dark(#b3654a, #e6b8a8);
+  --color-accent-soft: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  --color-accent-foreground: light-dark(#fdf6f2, #241812);
+
+  /* reserved for future semantic use (status/genre chips) — not wired into chrome */
+  --color-lavender: light-dark(#8f7fb0, #c8bce0);
+  --color-sage: light-dark(#5a8f6a, #b8d4c0);
+  --color-amber: light-dark(#a68a3d, #e6d59e);
+  --color-red-soft: light-dark(#b5574f, #e2a3a0);
+}
